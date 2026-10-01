@@ -1,0 +1,6 @@
+{
+  "name": "Undangan Pernikahan Digital Elegan",
+  "description": "Website undangan digital pernikahan modern minimalis elegan dengan hitung mundur, galeri foto, peta lokasi, amplop digital, dan ucapan tamu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
