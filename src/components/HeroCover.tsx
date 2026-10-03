@@ -65,8 +65,6 @@ export const HeroCover: React.FC<HeroCoverProps> = ({
         <div className="mb-4 relative">
           <div className="flex items-center justify-center gap-2">
             <CoupleIllustration type="groom" size="sm" className="w-16 h-16 shadow-md" />
-            <div className="text-[#C5A059] font-script text-2xl px-1">&</div>
-            <CoupleIllustration type="bride" size="sm" className="w-16 h-16 shadow-md" />
           </div>
         </div>
 
@@ -76,13 +74,13 @@ export const HeroCover: React.FC<HeroCoverProps> = ({
 
         {/* Bride & Groom Couple Names */}
         <h1 className="font-serif-luxury text-4xl sm:text-5xl font-semibold text-[#1A1816] tracking-wide mb-2">
-          Hanif <span className="font-script text-4xl sm:text-5xl text-[#C5A059] font-normal">&</span> Rina
+          Rina <span className="font-script text-4xl sm:text-5xl text-[#C5A059] font-normal">&</span> Hanif
         </h1>
 
         {/* Date Info */}
         <div className="flex items-center gap-2 text-xs text-[#8C8275] tracking-wider mb-6">
           <Calendar className="w-3.5 h-3.5 text-[#C5A059]" />
-          <span>SABTU, 24 OKTOBER 2026</span>
+          <span>SABTU, 17 NOVEMBER 2029</span>
         </div>
 
         {/* Divider Ornament */}

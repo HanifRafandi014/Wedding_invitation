@@ -170,7 +170,7 @@ export const DigitalEnvelopeSection: React.FC = () => {
             </div>
 
             <h3 className="font-serif-luxury text-xl font-bold text-[#1A1816] mb-1">
-              Hanif & Rina Wedding
+              Rina & Hanif Wedding
             </h3>
             <p className="text-xs text-[#8C8275] mb-4">
               NMID: ID1020038892182 - Standar QRIS Indonesia

@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Music, Disc3, Settings, Play, Pause, Upload, Check } from 'lucide-react';
-import { weddingAudio } from '../utils/audio';
+import React, { useState, useEffect, useRef } from 'react';
+import { Volume2, VolumeX, Music, Disc3, Settings, Play, Pause, Upload, Check, Youtube } from 'lucide-react';
+import { weddingAudio, WEDDING_PLAYLIST, extractYouTubeId, SongTrack } from '../utils/audio';
+
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 interface AudioPlayerProps {
   autoPlayTriggered: boolean;
@@ -9,22 +17,92 @@ interface AudioPlayerProps {
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [volume, setVolume] = useState(0.6);
-  const [activeSongName, setActiveSongName] = useState('Akustik Romantis (Wedding Theme)');
+  const [volume, setVolume] = useState(weddingAudio.getVolume());
+  const [activeTrack, setActiveTrack] = useState<SongTrack>(weddingAudio.getCurrentTrack());
   const [customUrlInput, setCustomUrlInput] = useState('');
-  const [customLoaded, setCustomLoaded] = useState(false);
+  const [customLoadedMsg, setCustomLoadedMsg] = useState('');
+  const ytInitializedRef = useRef(false);
 
+  // Initialize YouTube IFrame API
+  useEffect(() => {
+    const initPlayer = () => {
+      if (ytInitializedRef.current || !window.YT || !window.YT.Player) return;
+      ytInitializedRef.current = true;
+
+      const initialId = activeTrack.youtubeId || 'p6Z6lCSV7A0';
+
+      try {
+        new window.YT.Player('wedding-youtube-iframe-player', {
+          height: '1',
+          width: '1',
+          videoId: initialId,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            loop: 1,
+            playlist: initialId,
+            modestbranding: 1,
+            playsinline: 1,
+            rel: 0,
+            enablejsapi: 1,
+            origin: window.location.origin,
+          },
+          events: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onReady: (event: any) => {
+              weddingAudio.attachYouTubePlayer(event.target);
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onStateChange: (event: any) => {
+              weddingAudio.onYouTubeStateChange(event.data);
+            },
+            onError: () => {
+              weddingAudio.onYouTubeError();
+            },
+          },
+        });
+      } catch (err) {
+        console.warn('Could not initialize YouTube Player:', err);
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      // Load YouTube IFrame API Script
+      const existingScript = document.getElementById('youtube-iframe-api');
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.id = 'youtube-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+      }
+
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (prevCallback) prevCallback();
+        initPlayer();
+      };
+    }
+  }, [activeTrack.youtubeId]);
+
+  // Subscribe to audio state
   useEffect(() => {
     const unsub = weddingAudio.subscribe((playing) => {
       setIsPlaying(playing);
+      setActiveTrack(weddingAudio.getCurrentTrack());
     });
     return unsub;
   }, []);
 
+  // Handle Autoplay upon "Buka Undangan" click
   useEffect(() => {
     if (autoPlayTriggered && !weddingAudio.getIsPlaying()) {
       weddingAudio.play().catch(() => {
-        // Handled in audio player
+        // Handled in audio utility
       });
     }
   }, [autoPlayTriggered]);
@@ -39,41 +117,57 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
     weddingAudio.setVolume(val);
   };
 
-  const handleSongSelect = (title: string, url: string) => {
-    setActiveSongName(title);
-    weddingAudio.setCustomAudioUrl(url);
+  const handleSongSelect = (track: SongTrack) => {
+    weddingAudio.setTrack(track.name, track.url);
+    setActiveTrack(weddingAudio.getCurrentTrack());
     setShowSettings(false);
   };
 
   const handleApplyCustomUrl = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customUrlInput.trim()) return;
-    weddingAudio.setCustomAudioUrl(customUrlInput.trim());
-    setActiveSongName('Custom MP3 Track');
-    setCustomLoaded(true);
-    setTimeout(() => setCustomLoaded(false), 2000);
+    const url = customUrlInput.trim();
+    if (!url) return;
+
+    const ytId = extractYouTubeId(url);
+    const title = ytId ? 'Lagu YouTube Kustom' : 'Lagu Audio Kustom (MP3)';
+
+    weddingAudio.setTrack(title, url);
+    setActiveTrack(weddingAudio.getCurrentTrack());
+    setCustomLoadedMsg(ytId ? 'Link YouTube Berhasil Dipasang!' : 'URL Audio Dipasang!');
+    setTimeout(() => setCustomLoadedMsg(''), 3000);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      weddingAudio.setCustomAudioUrl(url);
-      setActiveSongName(file.name.replace(/\.[^/.]+$/, ""));
+      const title = file.name.replace(/\.[^/.]+$/, '');
+      weddingAudio.setTrack(title, url);
+      setActiveTrack(weddingAudio.getCurrentTrack());
       setShowSettings(false);
     }
   };
 
+  const isCurrentYouTube = Boolean(activeTrack.youtubeId || extractYouTubeId(activeTrack.url));
+
   return (
     <>
-      {/* Floating Vinyl Player Widget */}
+      {/* Hidden YouTube Audio IFrame Host */}
+      <div
+        aria-hidden="true"
+        className="fixed -top-[9999px] -left-[9999px] w-1 h-1 overflow-hidden pointer-events-none opacity-0"
+      >
+        <div id="wedding-youtube-iframe-player" />
+      </div>
+
+      {/* Floating Vinyl Player Widget (Bottom-Right) */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
         {/* Settings button */}
         <button
           onClick={() => setShowSettings(!showSettings)}
-          title="Pengaturan Musik / Ganti Lagu"
+          title="Pengaturan Lagu / Pilih Musik"
           aria-label="Pengaturan Musik"
-          className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-[#C5A059]/40 flex items-center justify-center text-[#2C2926] hover:text-[#A88132] hover:scale-105 transition-all"
+          className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-[#C5A059]/40 flex items-center justify-center text-[#2C2926] hover:text-[#A88132] hover:scale-105 transition-all"
         >
           <Settings className="w-4 h-4" />
         </button>
@@ -92,7 +186,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
               isPlaying ? 'animate-spin-slow text-[#D4AF37]' : 'text-[#8C8275]'
             }`}
           />
-          
+
           {/* Center Play/Pause indicator icon */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {isPlaying ? (
@@ -112,7 +206,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
       {/* Music Settings Modal / Drawer */}
       {showSettings && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
-          <div className="bg-[#FAF8F5] border border-[#C5A059]/30 rounded-2xl w-full max-w-md p-6 shadow-2xl text-[#2C2926] animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#FAF8F5] border border-[#C5A059]/30 rounded-3xl w-full max-w-md p-6 shadow-2xl text-[#2C2926] animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-[#C5A059]/20">
               <div className="flex items-center gap-2">
                 <Music className="w-5 h-5 text-[#A88132]" />
@@ -120,7 +214,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
               </div>
               <button
                 onClick={() => setShowSettings(false)}
-                className="text-sm px-2.5 py-1 rounded-lg hover:bg-neutral-200/60 text-neutral-600"
+                className="text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-neutral-200/70 text-neutral-600 transition-colors"
               >
                 ✕ Tutup
               </button>
@@ -128,27 +222,43 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
 
             <div className="mt-4 space-y-4">
               {/* Currently Playing Track */}
-              <div className="p-3 bg-white rounded-xl border border-[#C5A059]/20 flex items-center justify-between">
-                <div className="min-w-0 pr-2">
-                  <div className="text-xs text-[#9E9689] uppercase tracking-wider font-semibold">Sedang Diputar</div>
-                  <div className="text-sm font-medium text-[#2C2926] truncate">{activeSongName}</div>
+              <div className="p-3.5 bg-white rounded-2xl border border-[#C5A059]/30 shadow-xs flex items-center justify-between">
+                <div className="min-w-0 pr-3">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-[10px] text-[#9E9689] uppercase tracking-wider font-bold">
+                      Sedang Diputar:
+                    </span>
+                    {isCurrentYouTube ? (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-sm">
+                        <Youtube className="w-3 h-3 text-red-600" />
+                        YouTube Audio
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded-sm">
+                        MP3 Audio
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm font-semibold text-[#1A1816] truncate">
+                    {activeTrack.name}
+                  </div>
                 </div>
                 <button
                   onClick={handleToggle}
-                  className="p-2 rounded-full bg-[#C5A059]/15 text-[#A88132] hover:bg-[#C5A059]/30"
+                  className="p-2.5 rounded-full bg-[#1A1816] text-[#F4E8C1] hover:bg-[#2C2926] transition-all shadow-xs shrink-0"
                 >
                   {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
                 </button>
               </div>
 
               {/* Volume Slider */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 bg-white p-3 rounded-2xl border border-[#C5A059]/20">
                 <div className="flex items-center justify-between text-xs text-[#6B6358]">
-                  <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1.5 font-medium">
                     {volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                     Volume Audio
                   </span>
-                  <span>{Math.round(volume * 100)}%</span>
+                  <span className="font-semibold text-[#1A1816]">{Math.round(volume * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -157,79 +267,93 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ autoPlayTriggered }) =
                   step="0.05"
                   value={volume}
                   onChange={handleVolumeChange}
-                  className="w-full accent-[#C5A059] h-1.5 bg-neutral-200 rounded-lg cursor-pointer"
+                  className="w-full accent-[#C5A059] h-2 bg-neutral-200 rounded-lg cursor-pointer"
                 />
               </div>
 
-              {/* Preset Track Selections */}
+              {/* Preset Track Selections with YouTube Links */}
               <div className="space-y-2 pt-2 border-t border-[#C5A059]/20">
-                <div className="text-xs font-semibold text-[#6B6358] uppercase tracking-wider">
-                  Pilihan Lagu Romantis
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold text-[#6B6358] uppercase tracking-wider">
+                    Daftar Lagu Pernikahan
+                  </div>
+                  <span className="text-[10px] text-[#9A7B38] font-medium flex items-center gap-1">
+                    <Youtube className="w-3 h-3 text-red-500" />
+                    Putar Otomatis
+                  </span>
                 </div>
-                <div className="space-y-1.5">
-                  {[
-                    {
-                      name: 'Acoustic Wedding Love Theme (Default)',
-                      url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=acoustic-wedding-114258.mp3'
-                    },
-                    {
-                      name: 'Canon in D - Romantic Acoustic Piano',
-                      url: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c35272a818.mp3?filename=canon-in-d-major-romantic-10878.mp3'
-                    },
-                    {
-                      name: 'Gentle Wedding Harp & Strings Synth',
-                      url: '' // Will activate synth
-                    }
-                  ].map((song) => (
-                    <button
-                      key={song.name}
-                      onClick={() => handleSongSelect(song.name, song.url)}
-                      className={`w-full text-left px-3 py-2 text-xs rounded-lg flex items-center justify-between border transition-all ${
-                        activeSongName === song.name
-                          ? 'bg-[#C5A059]/15 border-[#C5A059] text-[#2C2926] font-semibold'
-                          : 'bg-white hover:bg-neutral-50 border-neutral-200 text-[#6B6358]'
-                      }`}
-                    >
-                      <span className="truncate pr-2">{song.name}</span>
-                      {activeSongName === song.name && <Check className="w-3.5 h-3.5 text-[#A88132] shrink-0" />}
-                    </button>
-                  ))}
+
+                <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                  {WEDDING_PLAYLIST.map((song) => {
+                    const isSelected = activeTrack.name === song.name;
+                    const isYt = Boolean(song.youtubeId);
+
+                    return (
+                      <button
+                        key={song.name}
+                        onClick={() => handleSongSelect(song)}
+                        className={`w-full text-left px-3.5 py-2.5 text-xs rounded-xl flex items-center justify-between border transition-all ${
+                          isSelected
+                            ? 'bg-[#1A1816] text-[#F4E8C1] border-[#1A1816] shadow-xs'
+                            : 'bg-white hover:bg-neutral-50 border-neutral-200/80 text-[#2C2926]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate pr-2">
+                          {isYt ? (
+                            <Youtube className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-red-400' : 'text-red-500'}`} />
+                          ) : (
+                            <Music className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-[#D4AF37]' : 'text-[#A88132]'}`} />
+                          )}
+                          <span className="truncate font-medium">{song.name}</span>
+                        </div>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Upload Local MP3 or Paste Asset URL */}
+              {/* Paste Any YouTube URL or MP3 Link */}
               <div className="pt-2 border-t border-[#C5A059]/20">
-                <div className="text-xs font-semibold text-[#6B6358] mb-2 uppercase tracking-wider">
-                  Ganti Dengan File Musik Sendiri (MP3)
+                <div className="text-xs font-bold text-[#6B6358] mb-1.5 uppercase tracking-wider flex items-center gap-1">
+                  <Youtube className="w-3.5 h-3.5 text-red-500" />
+                  <span>Tempel Link YouTube / MP3 Lainnya:</span>
                 </div>
-                <div className="flex gap-2 mb-2">
-                  <label className="flex-1 cursor-pointer flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-neutral-50 border border-dashed border-[#C5A059] rounded-lg text-xs font-medium text-[#2C2926] transition-colors">
-                    <Upload className="w-3.5 h-3.5 text-[#A88132]" />
-                    <span>Upload Lagu MP3 Anda</span>
-                    <input
-                      type="file"
-                      accept="audio/mp3,audio/wav,audio/mpeg"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
                 <form onSubmit={handleApplyCustomUrl} className="flex gap-1.5">
                   <input
-                    type="url"
+                    type="text"
                     value={customUrlInput}
                     onChange={(e) => setCustomUrlInput(e.target.value)}
-                    placeholder="Atau tempel URL file MP3 / asset..."
-                    className="flex-1 text-xs px-2.5 py-1.5 bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#C5A059]"
+                    placeholder="Contoh: https://youtu.be/... atau link .mp3"
+                    className="flex-1 text-xs px-3 py-2 bg-white border border-neutral-300 rounded-xl focus:outline-none focus:border-[#C5A059] text-[#1A1816]"
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-[#C5A059] text-white text-xs font-medium rounded-lg hover:bg-[#A88132]"
+                    className="px-3.5 py-2 bg-[#1A1816] text-[#F4E8C1] text-xs font-semibold rounded-xl hover:bg-[#2C2926] shrink-0 transition-colors"
                   >
-                    {customLoaded ? 'Tersimpan!' : 'Terapkan'}
+                    Putar
                   </button>
                 </form>
+                {customLoadedMsg && (
+                  <p className="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    <span>{customLoadedMsg}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Upload Local MP3 Option */}
+              <div className="pt-2 border-t border-[#C5A059]/20">
+                <label className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2.5 bg-white hover:bg-neutral-50 border border-dashed border-[#C5A059] rounded-xl text-xs font-medium text-[#2C2926] transition-colors">
+                  <Upload className="w-3.5 h-3.5 text-[#A88132]" />
+                  <span>Upload File MP3 Sendiri</span>
+                  <input
+                    type="file"
+                    accept="audio/mp3,audio/wav,audio/mpeg"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
               </div>
             </div>
           </div>

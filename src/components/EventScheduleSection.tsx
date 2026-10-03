@@ -39,7 +39,7 @@ export const EventScheduleSection: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#C5A059]/40 text-xs font-semibold text-[#9A7B38]">
                 <Sparkles className="w-3 h-3 text-[#C5A059]" />
-                {idx === 0 ? 'AKAD NIKAH' : 'RESEPSI PERNIKAHAN'}
+                {idx === 0 ? 'AKAD NIKAH & LAMARAN' : 'RESEPSI PERNIKAHAN'}
               </span>
               <span className="text-[11px] text-[#9E9689] font-medium">
                 {idx === 0 ? 'Sesi Khidmat' : 'Sesi Ramah Tamah'}
@@ -153,7 +153,7 @@ export const EventScheduleSection: React.FC = () => {
         {/* Embedded Map Canvas / Iframe */}
         <div className="w-full h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 relative bg-[#EAE5DD]">
           <iframe
-            title="Lokasi Pernikahan Hanif & Rina"
+            title="Lokasi Pernikahan Rina & Hanif"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.7725!3d-6.1947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnNDEuMCJTIDEwNsKwNDYnMjEuMCJF!5e0!3m2!1sid!2sid!4v1620000000000!5m2!1sid!2sid"
             width="100%"
             height="100%"
@@ -167,7 +167,7 @@ export const EventScheduleSection: React.FC = () => {
           {/* Overlay Tag */}
           <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-md border border-[#C5A059]/30 text-xs font-semibold text-[#1A1816] flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>Graha Sarana Harmoni / Kediaman Mempelai</span>
+            <span>Kediaman Rina</span>
           </div>
         </div>
       </div>

@@ -108,15 +108,15 @@ export default function App() {
           </div>
 
           <h1 className="font-serif-luxury text-4xl sm:text-6xl md:text-7xl font-medium text-[#1A1816] tracking-wide mb-3">
-            {WEDDING_DATA.groom.name}{' '}
+            {WEDDING_DATA.bride.name}{' '}
             <span className="font-script text-4xl sm:text-6xl md:text-7xl text-[#C5A059] font-normal">
               &
             </span>{' '}
-            {WEDDING_DATA.bride.name}
+            {WEDDING_DATA.groom.name}
           </h1>
 
           <p className="font-serif-luxury text-sm sm:text-base tracking-[0.25em] text-[#6B6358] uppercase mb-4">
-            Sabtu, 24 Oktober 2026 • Jakarta Barat
+            Sabtu, 17 November 2029 • Pasuruan, Jawa Timur
           </p>
 
           <div className="w-24 h-[1.5px] bg-gradient-to-r from-transparent via-[#C5A059] to-transparent mx-auto mb-6" />

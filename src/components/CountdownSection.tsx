@@ -33,22 +33,22 @@ export const CountdownSection: React.FC = () => {
 
   const handleDownloadIcs = () => {
     downloadIcsFile({
-      title: 'Pernikahan Hanif & Rina',
+      title: 'Pernikahan Rina & Hanif',
       description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Graha Sarana Harmoni / Kediaman Mempelai.',
       location: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat (https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7)',
-      startDate: new Date('2026-10-24T08:00:00+07:00'),
-      endDate: new Date('2026-10-24T17:00:00+07:00'),
+      startDate: new Date('2029-11-17T08:00:00+07:00'),
+      endDate: new Date('2029-11-17T17:00:00+07:00'),
     });
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 3000);
   };
 
   const googleCalendarUrl = createGoogleCalendarUrl({
-    title: 'Pernikahan Hanif & Rina',
+    title: 'Pernikahan Rina & Hanif',
     description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Graha Sarana Harmoni / Kediaman Mempelai.',
     location: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat (https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7)',
-    startDate: new Date('2026-10-24T08:00:00+07:00'),
-    endDate: new Date('2026-10-24T17:00:00+07:00'),
+    startDate: new Date('2029-11-17T08:00:00+07:00'),
+    endDate: new Date('2029-11-17T17:00:00+07:00'),
   });
 
   return (

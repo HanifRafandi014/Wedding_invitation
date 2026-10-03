@@ -28,7 +28,7 @@ export const LoveStorySection: React.FC = () => {
           <CoupleIllustration type="groom" size="md" />
           <div className="flex flex-col items-center justify-center text-[#C5A059] px-1">
             <Heart className="w-6 h-6 fill-[#C5A059] text-[#C5A059] animate-pulse" />
-            <span className="font-serif-luxury text-xs text-[#9A7B38] font-bold mt-1">2021 - 2026</span>
+            <span className="font-serif-luxury text-xs text-[#9A7B38] font-bold mt-1">2024 - 2029</span>
           </div>
           <CoupleIllustration type="bride" size="md" />
         </div>

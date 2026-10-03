@@ -33,7 +33,7 @@ export const ClosingSection: React.FC = () => {
             Kami yang berbahagia,
           </p>
           <div className="font-serif-luxury text-3xl sm:text-4xl font-bold text-[#1A1816] tracking-wide">
-            {groom.name} <span className="font-script text-4xl text-[#C5A059] font-normal">&</span> {bride.name}
+            {bride.name} <span className="font-script text-4xl text-[#C5A059] font-normal">&</span> {groom.name}
           </div>
           <p className="text-xs text-[#6B6358] mt-2">
             Beserta segenap keluarga besar kedua mempelai
