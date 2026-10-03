@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MailOpen, Heart, Calendar, Sparkles, Edit3, Check } from 'lucide-react';
+export const getImg = (name: string) => `${import.meta.env.BASE_URL}assets/images/${name}`;
 
 interface HeroCoverProps {
   onOpenInvitation: () => void;
@@ -63,7 +64,7 @@ export const HeroCover: React.FC<HeroCoverProps> = ({
         {/* Small Visual Couple Icon (Jas Hitam & Gaun Jilbab Putih) */}
         <div className="mb-8 relative">
           <div className="flex items-center justify-center">
-            <img src="/assets/images/cover.jpg" alt="Cover" className="w-50 h-50 sm:w-55 sm:h-55 object-cover rounded-2xl border-[3px] border-white ring-2 ring-amber-400/70 shadow-xl shadow-amber-900/15" />
+            <img src={getImg('cover.jpg')} alt="Cover" className="w-50 h-50 sm:w-55 sm:h-55 object-cover rounded-2xl border-[3px] border-white ring-2 ring-amber-400/70 shadow-xl shadow-amber-900/15" />
           </div>
         </div>
 

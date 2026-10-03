@@ -10,6 +10,12 @@ export interface CoupleInfo {
   bio: string;
 }
 
+// Helper gambar aman untuk localhost maupun subpath/deploy server
+export const getImg = (name: string): string => {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  return `${base}/assets/images/${name}`;
+};
+
 export interface WeddingEvent {
   title: string;
   dateStr: string;
@@ -62,7 +68,7 @@ export const WEDDING_DATA = {
     father: 'Bapak H. Adi Makroni',
     mother: 'Ibu Hj. Windya Astuti',
     instagram: '@hnfnoppaall',
-    photoUrl: '/assets/images/hanif3.jpg',
+    photoUrl: getImg('hanif3.jpg'),
     attireDescription: 'Mengenakan setelan jas hitam modern elegan, kemeja putih rapi, dan dasi formal',
     bio: 'Penuh rasa syukur dipertemukan dengan wanita sholehah yang kini menjadi pelabuhan terakhir hatiku.'
   },
@@ -73,13 +79,13 @@ export const WEDDING_DATA = {
     father: 'Bapak Edy Sofyan',
     mother: 'Ibu Masluha',
     instagram: '@ikrinasdyy',
-    photoUrl: '/assets/images/rina3.jpg',
+    photoUrl: getImg('rina3.jpg'),
     attireDescription: 'Mengenakan gaun pengantin muslimah putih panjang bertabur bordir mutiara, dipadukan jilbab putih anggun dan veil renda',
     bio: 'Menemukan ketenangan dan kehangatan dalam diri pria yang siap membimbing menuju surga-Nya.'
   },
   quranVerse: {
     surah: 'QS. Ar-Rum: 21',
-    arabic: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ',
+    arabic: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ',
     latin: 'Wa min aayaatihii an khalaqa lakum min anfusikum azwaajal litaskunuuu ilaihaa wa ja\'ala bainakum mawaddataw wa rahmah; inna fii zaalika la-aayaatil liqawmiy yatafakkaruun.',
     translation: 'Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.'
   },
@@ -113,21 +119,21 @@ export const WEDDING_DATA = {
       year: '2024',
       title: 'Awal Pertemuan yang Manis',
       story: 'Sebuah takdir indah mempertemukan pandangan kami di sebuah acara seminar kampus. Dari sekadar diskusi ringan tentang cita-cita, tumbuh benih kekaguman dan kecocokan hati yang mendalam.',
-      imageUrl: '/assets/images/hanif4.jpg',
+      imageUrl: getImg('hanif4.jpg'),
       location: 'Malang'
     },
     {
       year: '2027',
       title: 'Ikrar Tunangan & Pertemuan Dua Keluarga',
       story: 'Dengan niat suci berlandaskan ibadah, Hanif didampingi orang tua tercinta melangkah meminang Rina. Di hari yang penuh kebahagiaan itu, dua keluarga berpadu dalam kehangatan doa dan restu.',
-      imageUrl: '/assets/images/hanif4.jpg',
+      imageUrl: getImg('hanif4.jpg'),
       location: 'Kediaman Rina'
     },
     {
       year: '2029',
       title: 'Menuju Ikatan Suci Abadi',
       story: 'Setelah melewati perjalanan penuh saling menguatkan, kami siap mengikrarkan akad suci pernikahan. Memulai lembaran baru dalam balutan cinta, ridho orang tua, dan berkah Allah SWT.',
-      imageUrl: '/assets/images/hanif4.jpg',
+      imageUrl: getImg('hanif4.jpg'),
       location: 'Kediaman Rina'
     }
   ],
@@ -163,73 +169,39 @@ export const WEDDING_DATA = {
   gallery: [
     {
       id: 'g1',
-      url: '/assets/images/hanif1.jpg',
+      url: getImg('hanif1.jpg'),
       caption: 'Potret Keanggunan Pengantin: Jas Hitam & Gaun Jilbab Putih',
       category: 'prewedding',
     },
     {
       id: 'g2',
-      url: '/assets/images/rina1.jpg',
+      url: getImg('rina1.jpg'),
       caption: 'Momen Bahagia Lamaran',
       category: 'engagement',
     },
     {
       id: 'g3',
-      url: '/assets/images/hanif2.jpg',
+      url: getImg('hanif2.jpg'),
       caption: 'Janji Setia di Bawah Langit Senja',
       category: 'prewedding',
     },
     {
       id: 'g4',
-      url: '/assets/images/rina2.jpg',
+      url: getImg('rina2.jpg'),
       caption: 'Cincin Pengikat Dua Jiwa',
       category: 'details',
     },
     {
       id: 'g5',
-      url: '/assets/images/hanif3.jpg',
+      url: getImg('hanif3.jpg'),
       caption: 'Buket Mawar Putih Lambang Kesucian',
       category: 'details',
     },
     {
       id: 'g6',
-      url: '/assets/images/rina3.jpg',
+      url: getImg('rina3.jpg'),
       caption: 'Tawa & Bahagia yang Tak Lekang Waktu',
       category: 'prewedding',
     },
-  ] as GalleryItem[],
-  initialWishes: [
-    {
-      id: 'wish-1',
-      name: 'Rian Pratama & Keluarga',
-      attendance: 'hadir',
-      message: 'Barakallahu lakum wa baraka \'alaikum wa jama\'a bainakuma fii khoir. Selamat menempuh hidup baru Hanif dan Rina! Semoga selalu dilimpahkan cinta dan kebahagiaan!',
-      createdAt: '10 menit yang lalu',
-      city: 'Jakarta'
-    },
-    {
-      id: 'wish-2',
-      name: 'Dr. Dinda Faradiba',
-      attendance: 'hadir',
-      message: 'Masya Allah terharu banget liat perjalanan kalian berdua! Semoga sakinah mawaddah warahmah sampai kakek nenek. Aamiin ya Rabbal alamin.',
-      createdAt: '25 menit yang lalu',
-      city: 'Bandung'
-    },
-    {
-      id: 'wish-3',
-      name: 'Keluarga Besar Alumni Informatika',
-      attendance: 'hadir',
-      message: 'Selamat bro Hanif & Mbak Rina! InsyaAllah rombongan kami hadir meramaikan hari bahagia kalian.',
-      createdAt: '1 jam yang lalu',
-      city: 'Surabaya'
-    },
-    {
-      id: 'wish-4',
-      name: 'Siti Rahmawati',
-      attendance: 'ragu',
-      message: 'Selamat berbahagia sahabatku Rina! Maaf bila nanti agak telat karena ada dinas, tapi doa terbaik selalu mengiringi kalian.',
-      createdAt: '2 jam yang lalu',
-      city: 'Yogyakarta'
-    }
-  ]
+  ] as GalleryItem[]
 };

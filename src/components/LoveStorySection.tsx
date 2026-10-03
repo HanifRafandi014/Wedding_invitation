@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart, MapPin } from 'lucide-react';
 import { WEDDING_DATA } from '../data/weddingData';
+export const getImg = (name: string) => `${import.meta.env.BASE_URL}assets/images/${name}`;
 
 export const LoveStorySection: React.FC = () => {
   const { story } = WEDDING_DATA;
@@ -24,12 +25,12 @@ export const LoveStorySection: React.FC = () => {
       {/* Featured Couple Attire Banner (Jas Hitam & Gaun Jilbab Putih Panjang) */}
       <div className="mb-12 bg-white/80 rounded-3xl p-6 sm:p-8 border border-[#C5A059]/30 shadow-lg text-center flex flex-col items-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <img src="/assets/images/hanif1.jpg" className="w-37 h-37 sm:w-40 sm:h-40 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
+          <img src={getImg('hanif1.jpg')} className="w-37 h-37 sm:w-40 sm:h-40 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
           <div className="flex flex-col items-center justify-center text-[#C5A059] px-1">
             <Heart className="w-6 h-6 fill-[#C5A059] text-[#C5A059] animate-pulse" />
             <span className="font-serif-luxury text-xs text-[#9A7B38] font-bold mt-1">2024 - 2029</span>
           </div>
-          <img src="/assets/images/rina1.jpg" className="w-37 h-37 sm:w-40 sm:h-40 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
+          <img src={getImg('rina1.jpg')} className="w-37 h-37 sm:w-40 sm:h-40 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
         </div>
         <div className="max-w-lg">
           <span className="text-[11px] font-semibold tracking-wider text-[#9A7B38] uppercase">

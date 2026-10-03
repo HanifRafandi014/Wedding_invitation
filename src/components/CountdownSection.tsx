@@ -34,8 +34,8 @@ export const CountdownSection: React.FC = () => {
   const handleDownloadIcs = () => {
     downloadIcsFile({
       title: 'Pernikahan Rina & Hanif',
-      description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Graha Sarana Harmoni / Kediaman Mempelai.',
-      location: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat (https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7)',
+      description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Kediaman Mempelai Wanita.',
+      location: 'Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan (https://maps.app.goo.gl/xArezLUQkuNvaXF47)',
       startDate: new Date('2029-11-17T08:00:00+07:00'),
       endDate: new Date('2029-11-17T17:00:00+07:00'),
     });
@@ -45,8 +45,8 @@ export const CountdownSection: React.FC = () => {
 
   const googleCalendarUrl = createGoogleCalendarUrl({
     title: 'Pernikahan Rina & Hanif',
-    description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Graha Sarana Harmoni / Kediaman Mempelai.',
-    location: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat (https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7)',
+    description: 'Pernikahan Suci Hanif Naufal Rafandi & Ikrinatus Sadiyah. Bertempat di Kediaman Mempelai Wanita.',
+    location: 'Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan (https://maps.app.goo.gl/xArezLUQkuNvaXF47)',
     startDate: new Date('2029-11-17T08:00:00+07:00'),
     endDate: new Date('2029-11-17T17:00:00+07:00'),
   });

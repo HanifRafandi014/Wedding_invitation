@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Instagram, Sparkles, Image, Palette } from 'lucide-react';
 import { WEDDING_DATA } from '../data/weddingData';
-import { CoupleIllustration } from './CoupleIllustration';
+export const getImg = (name: string) => `${import.meta.env.BASE_URL}assets/images/${name}`;
 
 export const CoupleSection: React.FC = () => {
   const { groom, bride } = WEDDING_DATA;
@@ -78,7 +78,7 @@ export const CoupleSection: React.FC = () => {
           <div className="relative mb-6">
             {viewMode === 'illustration' ? (
               <div className="transition-transform duration-300 group-hover:scale-102">
-                <img src="/assets/images/hanif2.jpg" className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
+                <img src={getImg('hanif2.jpg')} className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
               </div>
             ) : (
               <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-xl border-2 border-[#C5A059]/50 relative group/photo">
@@ -133,7 +133,7 @@ export const CoupleSection: React.FC = () => {
           <div className="relative mb-6">
             {viewMode === 'illustration' ? (
               <div className="transition-transform duration-300 group-hover:scale-102">
-                <img src="/assets/images/rina2.jpg" className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
+                <img src={getImg('rina2.jpg')} className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
               </div>
             ) : (
               <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-xl border-2 border-[#C5A059]/50 relative group/photo">
