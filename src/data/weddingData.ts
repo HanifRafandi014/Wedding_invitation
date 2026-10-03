@@ -62,18 +62,18 @@ export const WEDDING_DATA = {
     father: 'Bapak H. Adi Makroni',
     mother: 'Ibu Hj. Windya Astuti',
     instagram: '@hnfnoppaall',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/assets/images/hanif3.jpg',
     attireDescription: 'Mengenakan setelan jas hitam modern elegan, kemeja putih rapi, dan dasi formal',
     bio: 'Penuh rasa syukur dipertemukan dengan wanita sholehah yang kini menjadi pelabuhan terakhir hatiku.'
   },
   bride: {
     name: 'Rina',
     fullName: 'Ikrinatus Sadiyah',
-    parents: 'Putri tercinta dari Bapak Bambang Wahyudi & Ibu Sri Rahayu',
-    father: 'Bapak Bambang Wahyudi',
-    mother: 'Ibu Sri Rahayu',
+    parents: 'Putri tercinta dari Bapak Edy Sofyan & Ibu Masluha',
+    father: 'Bapak Edy Sofyan',
+    mother: 'Ibu Masluha',
     instagram: '@ikrinasdyy',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/assets/images/rina3.jpg',
     attireDescription: 'Mengenakan gaun pengantin muslimah putih panjang bertabur bordir mutiara, dipadukan jilbab putih anggun dan veil renda',
     bio: 'Menemukan ketenangan dan kehangatan dalam diri pria yang siap membimbing menuju surga-Nya.'
   },
@@ -91,9 +91,9 @@ export const WEDDING_DATA = {
       date: new Date('2029-11-17T08:00:00+07:00'),
       timeStr: '08:00 - 10:00 WIB',
       venue: 'Kediaman Mempelai Wanita',
-      address: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat',
-      mapsUrl: 'https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7',
-      mapsEmbedQuery: 'Jl.+Melati+Indah+No.+12+Jakarta+Barat',
+      address: 'Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan',
+      mapsUrl: 'https://maps.app.goo.gl/xArezLUQkuNvaXF47',
+      mapsEmbedQuery: 'Jl.+Gatot+Subroto,+Gg+2,+RT+001/RW+002,+Kelurahan+Petahunan,+Kecamatan+Gadingrejo,+Kota+Pasuruan',
       note: 'Diharapkan hadir 15 menit sebelum acara dimulai dengan khidmat.'
     },
     {
@@ -102,9 +102,9 @@ export const WEDDING_DATA = {
       date: new Date('2029-11-17T11:00:00+07:00'),
       timeStr: '11:00 - 17:00 WIB',
       venue: 'Kediaman Mempelai Wanita',
-      address: 'Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat',
-      mapsUrl: 'https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7',
-      mapsEmbedQuery: 'Jl.+Melati+Indah+No.+12+Jakarta+Barat',
+      address: 'Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan',
+      mapsUrl: 'https://maps.app.goo.gl/xArezLUQkuNvaXF47',
+      mapsEmbedQuery: 'Jl.+Gatot+Subroto,+Gg+2,+RT+001/RW+002,+Kelurahan+Petahunan,+Kecamatan+Gadingrejo,+Kota+Pasuruan',
       note: 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Bapak/Ibu/Saudara/i.'
     }
   ],
@@ -113,21 +113,21 @@ export const WEDDING_DATA = {
       year: '2024',
       title: 'Awal Pertemuan yang Manis',
       story: 'Sebuah takdir indah mempertemukan pandangan kami di sebuah acara seminar kampus. Dari sekadar diskusi ringan tentang cita-cita, tumbuh benih kekaguman dan kecocokan hati yang mendalam.',
-      imageUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/images/hanif4.jpg',
       location: 'Malang'
     },
     {
       year: '2027',
       title: 'Ikrar Tunangan & Pertemuan Dua Keluarga',
       story: 'Dengan niat suci berlandaskan ibadah, Hanif didampingi orang tua tercinta melangkah meminang Rina. Di hari yang penuh kebahagiaan itu, dua keluarga berpadu dalam kehangatan doa dan restu.',
-      imageUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/images/hanif4.jpg',
       location: 'Kediaman Rina'
     },
     {
       year: '2029',
       title: 'Menuju Ikatan Suci Abadi',
       story: 'Setelah melewati perjalanan penuh saling menguatkan, kami siap mengikrarkan akad suci pernikahan. Memulai lembaran baru dalam balutan cinta, ridho orang tua, dan berkah Allah SWT.',
-      imageUrl: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/images/hanif4.jpg',
       location: 'Kediaman Rina'
     }
   ],
@@ -157,43 +157,43 @@ export const WEDDING_DATA = {
   physicalGiftAddress: {
     receiver: 'Hanif Naufal Rafandi & Ikrinatus Sadiyah',
     phone: '0888-0152-4852',
-    address: 'Jl. Melati Indah No. 12, RT 04/RW 02, Kebon Jeruk, Jakarta Barat, DKI Jakarta 11530',
+    address: 'Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan',
     note: 'Mohon konfirmasi sebelum pengiriman agar kado dapat diterima dengan baik.'
   },
   gallery: [
     {
       id: 'g1',
-      url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/hanif1.jpg',
       caption: 'Potret Keanggunan Pengantin: Jas Hitam & Gaun Jilbab Putih',
       category: 'prewedding',
     },
     {
       id: 'g2',
-      url: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/rina1.jpg',
       caption: 'Momen Bahagia Lamaran',
       category: 'engagement',
     },
     {
       id: 'g3',
-      url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/hanif2.jpg',
       caption: 'Janji Setia di Bawah Langit Senja',
       category: 'prewedding',
     },
     {
       id: 'g4',
-      url: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/rina2.jpg',
       caption: 'Cincin Pengikat Dua Jiwa',
       category: 'details',
     },
     {
       id: 'g5',
-      url: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/hanif3.jpg',
       caption: 'Buket Mawar Putih Lambang Kesucian',
       category: 'details',
     },
     {
       id: 'g6',
-      url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1000&q=80',
+      url: '/assets/images/rina3.jpg',
       caption: 'Tawa & Bahagia yang Tak Lekang Waktu',
       category: 'prewedding',
     },

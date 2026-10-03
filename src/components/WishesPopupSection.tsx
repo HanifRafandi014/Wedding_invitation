@@ -1,29 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquareHeart, Send, Sparkles, CheckCircle2, User, MapPin, Heart, X } from 'lucide-react';
-import { WEDDING_DATA, GuestWish } from '../data/weddingData';
+import { 
+  MessageSquareHeart, 
+  Send, 
+  Sparkles, 
+  CheckCircle2, 
+  User, 
+  MapPin, 
+  Heart, 
+  X, 
+  Loader2 
+} from 'lucide-react';
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL2BCupOCV04rcEnuUsB_NSzGhU6V_lAuRL2ogLOaZRoMCWAzc4iWCLmmYDwv7zCHOXA/exec';
+
+export interface LiveGuestWish {
+  id: string | number;
+  timestamp: string;
+  name: string;
+  city: string;
+  attendance: 'hadir' | 'ragu' | 'tidak_hadir' | string;
+  message: string;
+}
 
 interface WishesPopupSectionProps {
   guestName: string;
 }
 
-export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestName }) => {
-  const [wishes, setWishes] = useState<GuestWish[]>(() => {
-    try {
-      const saved = localStorage.getItem('wedding_guest_wishes');
-      if (saved) return JSON.parse(saved);
-    } catch {
-      // Ignore
-    }
-    return WEDDING_DATA.initialWishes;
-  });
+// Helper untuk menghitung selisih waktu dari baris spreadsheet sampai sekarang
+function getRelativeTime(timestampStr: string): string {
+  if (!timestampStr) return 'Baru saja';
+  const created = new Date(timestampStr).getTime();
+  const now = new Date().getTime();
+  
+  if (isNaN(created)) return 'Baru saja';
 
-  const [nameInput, setNameInput] = useState(guestName || '');
-  const [cityInput, setCityInput] = useState('');
+  const diffInMinutes = Math.floor((now - created) / (1000 * 60));
+
+  if (diffInMinutes < 1) return 'Baru saja';
+  if (diffInMinutes < 60) return `${diffInMinutes} menit yang lalu`;
+  
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} jam yang lalu`;
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `${diffInDays} hari yang lalu`;
+}
+
+export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestName }) => {
+  // Data murni bersumber dari Spreadsheet (tidak ada dummy/initial template)
+  const [wishes, setWishes] = useState<LiveGuestWish[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // Form State
+  const [nameInput, setNameInput] = useState<string>(guestName || '');
+  const [cityInput, setCityInput] = useState<string>('');
   const [attendance, setAttendance] = useState<'hadir' | 'ragu' | 'tidak_hadir'>('hadir');
-  const [messageInput, setMessageInput] = useState('');
+  const [messageInput, setMessageInput] = useState<string>('');
   
   // Real-time animated popup card for newly submitted wish
-  const [activePopupWish, setActivePopupWish] = useState<GuestWish | null>(null);
+  const [activePopupWish, setActivePopupWish] = useState<LiveGuestWish | null>(null);
 
   useEffect(() => {
     if (guestName && !nameInput) {
@@ -31,34 +67,78 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
     }
   }, [guestName]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nameInput.trim() || !messageInput.trim()) return;
+  // Fungsi fetch data dari Google Spreadsheet
+  const fetchWishes = async () => {
+    try {
+      const response = await fetch(SCRIPT_URL);
+      if (response.ok) {
+        const data: LiveGuestWish[] = await response.json();
+        setWishes(data);
+      }
+    } catch (err) {
+      console.error('Gagal mengambil data doa dari spreadsheet:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const newWish: GuestWish = {
-      id: `wish-${Date.now()}`,
+  // Real-time synchronization interval (tiap 5 detik)
+  useEffect(() => {
+    fetchWishes();
+    const interval = setInterval(fetchWishes, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nameInput.trim() || !messageInput.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    const payload = {
       name: nameInput.trim(),
+      city: cityInput.trim() || 'Tamu Undangan',
       attendance,
       message: messageInput.trim(),
-      createdAt: 'Baru saja',
-      city: cityInput.trim() || 'Tamu Undangan',
     };
 
-    const updated = [newWish, ...wishes];
-    setWishes(updated);
-    try {
-      localStorage.setItem('wedding_guest_wishes', JSON.stringify(updated));
-    } catch {
-      // Ignore
-    }
+    const tempNewWish: LiveGuestWish = {
+      id: `wish-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      ...payload,
+    };
 
-    // Trigger instant popup message on screen as requested!
-    setActivePopupWish(newWish);
-    setMessageInput('');
+    try {
+      // KIRIM DENGAN text/plain (KUNCI AGAR DITERIMA GOOGLE APPS SCRIPT)
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // Update tampilan langsung
+      setWishes((prev) => [tempNewWish, ...prev]);
+      setActivePopupWish(tempNewWish);
+
+      // Reset form
+      setMessageInput('');
+      setCityInput('');
+
+      // Tunggu 2 detik lalu sinkronkan ulang dari spreadsheet
+      setTimeout(fetchWishes, 2000);
+    } catch (error) {
+      console.error('Gagal mengirimkan ucapan:', error);
+      alert('Maaf, ucapan gagal terkirim. Silakan coba kembali.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSelectPreset = (text: string) => {
-    setMessageInput(prev => (prev ? `${prev} ${text}` : text));
+    setMessageInput((prev) => (prev ? `${prev} ${text}` : text));
   };
 
   return (
@@ -111,14 +191,14 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
             {/* City / Relationship */}
             <div>
               <label className="block text-xs font-semibold text-[#555048] mb-1">
-                Kota Asal / Hubungan
+                Kota Asal
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={cityInput}
                   onChange={(e) => setCityInput(e.target.value)}
-                  placeholder="Contoh: Jakarta / Sahabat Kuliah"
+                  placeholder="Contoh: Blitar"
                   className="w-full text-xs px-3.5 py-2.5 bg-[#FAF8F5] border border-[#C5A059]/30 rounded-xl focus:outline-none focus:border-[#C5A059] text-[#1A1816]"
                 />
                 <MapPin className="w-3.5 h-3.5 text-[#9E9689] absolute right-3 top-3" />
@@ -135,7 +215,7 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
                   { id: 'hadir', label: 'Hadir' },
                   { id: 'ragu', label: 'Masih Ragu' },
                   { id: 'tidak_hadir', label: 'Berhalangan' },
-                ].map(opt => (
+                ].map((opt) => (
                   <button
                     type="button"
                     key={opt.id}
@@ -159,7 +239,7 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  'Barakallahu lakuma wa jama\'a bainakuma fii khair',
+                  "Barakallahu lakuma wa jama'a bainakuma fii khair",
                   'Selamat menempuh hidup baru!',
                   'Semoga sakinah mawaddah warahmah',
                 ].map((txt, i) => (
@@ -193,10 +273,15 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-[#1A1816] text-[#F4E8C1] text-xs font-semibold hover:bg-[#2C2926] shadow-md hover:shadow-lg active:scale-95 transition-all"
+              disabled={isSubmitting}
+              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-[#1A1816] text-[#F4E8C1] text-xs font-semibold hover:bg-[#2C2926] shadow-md hover:shadow-lg active:scale-95 transition-all disabled:opacity-60"
             >
-              <Send className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Kirimkan Ucapan (Muncul Langsung)</span>
+              {isSubmitting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+              ) : (
+                <Send className="w-3.5 h-3.5 text-[#D4AF37]" />
+              )}
+              <span>{isSubmitting ? 'Mengirim Doa...' : 'Kirimkan Ucapan (Muncul Langsung)'}</span>
             </button>
           </form>
         </div>
@@ -217,49 +302,60 @@ export const WishesPopupSection: React.FC<WishesPopupSectionProps> = ({ guestNam
 
           {/* Wishes List (Scrollable) */}
           <div className="space-y-3.5 max-h-[460px] overflow-y-auto pr-1">
-            {wishes.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 rounded-2xl bg-white border border-[#C5A059]/25 shadow-xs hover:border-[#C5A059]/60 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-serif-luxury font-bold text-sm text-[#1A1816]">
-                      {item.name}
-                    </span>
-                    {item.city && (
-                      <span className="text-[10px] text-[#9E9689] italic">
-                        ({item.city})
-                      </span>
-                    )}
-                  </div>
-                  <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      item.attendance === 'hadir'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : item.attendance === 'ragu'
-                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                        : 'bg-neutral-100 text-neutral-600'
-                    }`}
-                  >
-                    {item.attendance === 'hadir'
-                      ? '✓ Hadir'
-                      : item.attendance === 'ragu'
-                      ? '? Ragu'
-                      : '✕ Berhalangan'}
-                  </span>
-                </div>
-
-                <p className="text-xs text-[#4A453E] leading-relaxed">
-                  {item.message}
-                </p>
-
-                <div className="mt-2 text-[10px] text-[#9E9689] flex items-center justify-between">
-                  <span>{item.createdAt}</span>
-                  <Heart className="w-3 h-3 text-[#D4AF37]/50" />
-                </div>
+            {isLoading ? (
+              <div className="py-14 flex flex-col items-center justify-center text-[#9E9689] gap-2">
+                <Loader2 className="w-6 h-6 animate-spin text-[#C5A059]" />
+                <p className="text-xs">Menghubungkan ke buku tamu...</p>
               </div>
-            ))}
+            ) : wishes.length === 0 ? (
+              <div className="py-14 text-center text-xs text-[#9E9689]">
+                Belum ada untaian doa di lembar tamu. Jadilah yang pertama memberikan doa restu!
+              </div>
+            ) : (
+              wishes.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-4 rounded-2xl bg-white border border-[#C5A059]/25 shadow-xs hover:border-[#C5A059]/60 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-serif-luxury font-bold text-sm text-[#1A1816]">
+                        {item.name}
+                      </span>
+                      {item.city && (
+                        <span className="text-[10px] text-[#9E9689] italic">
+                          ({item.city})
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                        item.attendance === 'hadir'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : item.attendance === 'ragu'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-neutral-100 text-neutral-600'
+                      }`}
+                    >
+                      {item.attendance === 'hadir'
+                        ? '✓ Hadir'
+                        : item.attendance === 'ragu'
+                        ? '? Ragu'
+                        : '✕ Berhalangan'}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#4A453E] leading-relaxed">
+                    {item.message}
+                  </p>
+
+                  <div className="mt-2 text-[10px] text-[#9E9689] flex items-center justify-between">
+                    <span>{getRelativeTime(item.timestamp)}</span>
+                    <Heart className="w-3 h-3 text-[#D4AF37]/50" />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

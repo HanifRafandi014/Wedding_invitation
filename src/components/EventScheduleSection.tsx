@@ -136,11 +136,11 @@ export const EventScheduleSection: React.FC = () => {
               Peta Lokasi Interaktif
             </h4>
             <p className="text-xs text-[#6B6358]">
-              Jl. Melati Indah No. 12, Kebon Jeruk, Jakarta Barat
+              Jl. Gatot Subroto, Gg 2, RT 001/RW 002, Kelurahan Petahunan, Kecamatan Gadingrejo, Kota Pasuruan
             </p>
           </div>
           <a
-            href="https://maps.app.goo.gl/roJYnbBnbUvhJ2dm7"
+            href="https://maps.app.goo.gl/xArezLUQkuNvaXF47"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1A1816] text-[#D4AF37] text-xs font-medium hover:bg-[#2C2926] transition-all shadow-xs"
@@ -154,7 +154,7 @@ export const EventScheduleSection: React.FC = () => {
         <div className="w-full h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 relative bg-[#EAE5DD]">
           <iframe
             title="Lokasi Pernikahan Rina & Hanif"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.7725!3d-6.1947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnNDEuMCJTIDEwNsKwNDYnMjEuMCJF!5e0!3m2!1sid!2sid!4v1620000000000!5m2!1sid!2sid"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.3680141745726!2d112.8811512!3d-7.6435156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMzgnMzYuNyJTIDExMsKwNTMnMDEuNCJF!5e0!3m2!1sid!2sid!4v1710000000000!5m2!1sid!2sid"
             width="100%"
             height="100%"
             style={{ border: 0 }}

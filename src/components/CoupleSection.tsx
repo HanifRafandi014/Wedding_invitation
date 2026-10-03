@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Instagram, Sparkles, Image, Palette, Camera } from 'lucide-react';
+import { Heart, Instagram, Sparkles, Image, Palette } from 'lucide-react';
 import { WEDDING_DATA } from '../data/weddingData';
 import { CoupleIllustration } from './CoupleIllustration';
 
@@ -78,7 +78,7 @@ export const CoupleSection: React.FC = () => {
           <div className="relative mb-6">
             {viewMode === 'illustration' ? (
               <div className="transition-transform duration-300 group-hover:scale-102">
-                <CoupleIllustration type="groom" size="lg" />
+                <img src="/assets/images/hanif2.jpg" className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
               </div>
             ) : (
               <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-xl border-2 border-[#C5A059]/50 relative group/photo">
@@ -88,15 +88,6 @@ export const CoupleSection: React.FC = () => {
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover/photo:scale-105 transition-transform duration-500"
                 />
-                <label className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white p-2 rounded-full cursor-pointer shadow-md transition-colors">
-                  <Camera className="w-3.5 h-3.5" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCustomGroomUpload}
-                    className="hidden"
-                  />
-                </label>
               </div>
             )}
             
@@ -142,7 +133,7 @@ export const CoupleSection: React.FC = () => {
           <div className="relative mb-6">
             {viewMode === 'illustration' ? (
               <div className="transition-transform duration-300 group-hover:scale-102">
-                <CoupleIllustration type="bride" size="lg" />
+                <img src="/assets/images/rina2.jpg" className="w-55 h-55 sm:w-60 sm:h-60 object-cover rounded-2xl border-[3px] border-white shadow-xl shadow-amber-900/15" />
               </div>
             ) : (
               <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-xl border-2 border-[#C5A059]/50 relative group/photo">
@@ -152,15 +143,6 @@ export const CoupleSection: React.FC = () => {
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover/photo:scale-105 transition-transform duration-500"
                 />
-                <label className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white p-2 rounded-full cursor-pointer shadow-md transition-colors">
-                  <Camera className="w-3.5 h-3.5" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCustomBrideUpload}
-                    className="hidden"
-                  />
-                </label>
               </div>
             )}
 
